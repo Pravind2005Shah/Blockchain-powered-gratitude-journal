@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web3 Gratitude Journal</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.8.1/dist/web3.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+            color: #2d3748;
+            line-height: 1.7;
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            backdrop-filter: blur(10px);
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2d3748;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #2d3748;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .wallet-section {
+            text-align: center;
+        }
+
+        .network-status {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #718096;
+            font-weight: 500;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(99, 102, 241, 0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn:disabled {
+            background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .input-section {
+            margin-bottom: 2rem;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 1.2rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            resize: vertical;
+            font-family: 'Poppins', sans-serif;
+            transition: border-color 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .entries-section {
+            margin-top: 2rem;
+        }
+
+        .entry {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 1.5rem;
+            border-radius: 16px;
+            margin-bottom: 1.2rem;
+            border-left: 5px solid #6366f1;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .entry:hover {
+            transform: translateX(5px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .entry-meta {
+            font-size: 0.85rem;
+            color: #718096;
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .error, .success {
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+        }
+
+        .error {
+            background: #fff5f5;
+            color: #e53e3e;
+            border-left: 5px solid #e53e3e;
+        }
+
+        .success {
+            background: #f0fff4;
+            color: #38a169;
+            border-left: 5px solid #38a169;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-10px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem 0;
+            }
+
+            .container {
+                padding: 0 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .card {
+                padding: 1.5rem;
+            }
+
+            .btn {
+                padding: 0.8rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<!-- Rest of the HTML and JavaScript code remains exactly the same -->
+<body>
+    <!-- Previous HTML structure and JavaScript remain unchanged -->
+    <div class="container">
+        <h1>Web3 Gratitude Journal</h1>
+        
+        <div class="card wallet-section">
+            <button id="connectWallet" class="btn">Connect Wallet</button>
+            <div id="walletInfo" class="network-status"></div>
+        </div>
+
+        <div class="card input-section">
+            <textarea id="gratitudeInput" placeholder="What are you grateful for today?"></textarea>
+            <button id="submitGratitude" class="btn" disabled>Add Gratitude Entry</button>
+        </div>
+
+        <div id="messageContainer"></div>
+
+        <div class="card entries-section">
+            <h2>Your Entries</h2>
+            <div id="entriesList"></div>
+        </div>
+    </div>
+
+    <script>
+        // Contract ABI remains the same
+        const contractABI = [
+            {
+                "inputs": [{"internalType": "string","name": "_content","type": "string"}],
+                "name": "addGratitude",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "getMyEntries",
+                "outputs": [
+                    {
+                        "components": [
+                            {"internalType": "string","name": "content","type": "string"},
+                            {"internalType": "uint256","name": "timestamp","type": "uint256"},
+                            {"internalType": "address","name": "author","type": "address"}
+                        ],
+                        "internalType": "struct GratitudeJournal.GratitudeEntry[]",
+                        "name": "",
+                        "type": "tuple[]"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            }
+        ];
+
+        // Replace with your deployed contract address
+        const contractAddress = '0x5B2B649705c8f52B3173Ae6f18289977F67168aA';
+
+        let web3;
+        let contract;
+        let userAccount;
+
+        class GratitudeJournalApp {
+            constructor() {
+                this.initializeElements();
+                this.addEventListeners();
+            }
+
+            initializeElements() {
+                this.connectButton = document.getElementById('connectWallet');
+                this.walletInfo = document.getElementById('walletInfo');
+                this.gratitudeInput = document.getElementById('gratitudeInput');
+                this.submitButton = document.getElementById('submitGratitude');
+                this.entriesList = document.getElementById('entriesList');
+                this.messageContainer = document.getElementById('messageContainer');
+            }
+
+            addEventListeners() {
+                this.connectButton.addEventListener('click', () => this.connectWallet());
+                this.submitButton.addEventListener('click', () => this.submitGratitude());
+                
+                if (window.ethereum) {
+                    window.ethereum.on('chainChanged', () => window.location.reload());
+                    window.ethereum.on('accountsChanged', () => this.handleAccountChange());
+                }
+            }
+
+            showMessage(message, type = 'info') {
+                const div = document.createElement('div');
+                div.textContent = message;
+                div.className = type;
+                this.messageContainer.innerHTML = '';
+                this.messageContainer.appendChild(div);
+                setTimeout(() => div.remove(), 5000);
+            }
+
+            async connectWallet() {
+                try {
+                    if (typeof window.ethereum === 'undefined') {
+                        throw new Error('MetaMask is not installed');
+                    }
+
+                    web3 = new Web3(window.ethereum);
+                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    userAccount = accounts[0];
+
+                    contract = new web3.eth.Contract(contractABI, contractAddress);
+                    
+                    this.walletInfo.textContent = `Connected: ${userAccount.substring(0, 6)}...${userAccount.substring(38)}`;
+                    this.submitButton.disabled = false;
+                    this.connectButton.textContent = 'Connected';
+                    
+                    await this.loadEntries();
+                    this.showMessage('Wallet connected successfully!', 'success');
+                } catch (error) {
+                    this.showMessage(`Error connecting wallet: ${error.message}`, 'error');
+                }
+            }
+
+            async handleAccountChange() {
+                const accounts = await web3.eth.getAccounts();
+                if (accounts.length === 0) {
+                    this.walletInfo.textContent = 'Not connected';
+                    this.submitButton.disabled = true;
+                    this.connectButton.textContent = 'Connect Wallet';
+                } else {
+                    userAccount = accounts[0];
+                    await this.loadEntries();
+                }
+            }
+
+            async submitGratitude() {
+                const content = this.gratitudeInput.value.trim();
+                if (!content) {
+                    this.showMessage('Please enter some gratitude text!', 'error');
+                    return;
+                }
+
+                try {
+                    this.submitButton.disabled = true;
+                    this.submitButton.textContent = 'Submitting...';
+
+                    await contract.methods.addGratitude(content)
+                        .send({ from: userAccount });
+
+                    this.gratitudeInput.value = '';
+                    this.showMessage('Gratitude entry added successfully!', 'success');
+                    await this.loadEntries();
+                } catch (error) {
+                    this.showMessage(`Error adding entry: ${error.message}`, 'error');
+                } finally {
+                    this.submitButton.disabled = false;
+                    this.submitButton.textContent = 'Add Gratitude Entry';
+                }
+            }
+
+            async loadEntries() {
+                try {
+                    const entries = await contract.methods.getMyEntries()
+                        .call({ from: userAccount });
+                    
+                    this.entriesList.innerHTML = '';
+                    
+                    if (entries.length === 0) {
+                        this.entriesList.innerHTML = '<p>No entries yet. Start by adding your first gratitude!</p>';
+                        return;
+                    }
+
+                    // Create a new array from the entries and then reverse it
+                    const reversedEntries = Array.from(entries).reverse();
+
+                    reversedEntries.forEach(entry => {
+                        const date = new Date(Number(entry.timestamp) * 1000);
+                        const entryElement = document.createElement('div');
+                        entryElement.className = 'entry';
+                        entryElement.innerHTML = `
+                            <div>${entry.content}</div>
+                            <div class="entry-meta">
+                                ${date.toLocaleString()}
+                            </div>
+                        `;
+                        this.entriesList.appendChild(entryElement);
+                    });
+                } catch (error) {
+                    this.showMessage(`Error loading entries: ${error.message}`, 'error');
+                    console.error('Error details:', error);
+                }
+            }
+        }
+
+        // Initialize the app when the page loads
+        window.addEventListener('load', () => {
+            new GratitudeJournalApp();
+        });
+    </script>
+</body>
+</html>
